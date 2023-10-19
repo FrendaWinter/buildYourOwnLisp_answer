@@ -1,18 +1,36 @@
 # An Interactive Prompt • Chapter 4
 
-### First question : Change the prompt from lispy Question : to something of your choice.
+### First question : Change the prompt from lispy> to something of your choice.
+
+Just change `char* input = readline("lispy> ");` to whatever you like `char* input = readline("frenda> ");`
+
 ### Question 2: Change what is echoed back to the user.
+
+Just change `printf("No you're a %s\n", input);` to something of your choice `printf("My input is %s\n", input);`
+
 ### Question 3: Add an extra message to the Version and Exit Information.
+
+Add this two lines to the main function
+```c
+puts("Lispy Version 0.0.0.0.1");
+puts("Press Ctrl+c to Exit\n");
+```
+
 ### Question 4: What does the \n mean in those strings?
 
 It is escape sequence for endline
+
 Ref: https://www.geeksforgeeks.org/escape-sequence-in-c/"
 
 ### Question 5: What other patterns can be used with printf?
 
+Fun ref: https://www.geeksforgeeks.org/pattern-programs-in-c/
+
 ### Question 6: What happens when you pass printf a variable that does not match the pattern?
 
 ### Question 7: What does the preprocessor command #ifndef do?
+
+Short for `if not defined`
 
 ### Question 8: What does the preprocessor command #define do?
 
