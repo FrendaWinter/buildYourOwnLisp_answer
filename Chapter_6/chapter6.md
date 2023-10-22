@@ -69,15 +69,26 @@ mpca_lang(MPCA_LANG_DEFAULT,
 mpca_lang(MPCA_LANG_DEFAULT,
             "                                \
     number : /-?[0-9]+(\\.[0-9]*)?/ ;        \
-    symbol : '+' | '-' | '*' | '/' | '%' ;   \
-    sexpr  : '(' <expr>* ')' ;               \
-    expr   : <number> | <symbol> | <sexpr> ; \
-    lispy  : /^/ <expr>* /$/ ;               \
+    operator : '+' | '-' | '*' | '/' ;            \
+    expr     : <number> | '(' <operator> <expr>+ ')' ;  \
+    lispy    : /^/ <operator> <expr>+ /$/ ;             \
 ",
-            Number, Symbol, Sexpr, Expr, Lispy);
+            Number, Operator, Expr, Lispy);
 ```
 
 ### Question 7: Change the grammar to make the operators written conventionally, between two expressions.
+
+```c
+/* Change the regex of lispy to make the operators written conventionally */
+mpca_lang(MPCA_LANG_DEFAULT,
+            "                                           \
+    number : /-?[0-9]+(\\.[0-9]*)?/ ;                   \
+    operator : '+' | '-' | '*' | '/' ;                  \
+    expr     : <number> | '(' <operator> <expr>+ ')' ;  \
+    lispy    : /^/ <expr> <operator> <expr> /$/ ;       \
+",
+            Number, Operator, Expr, Lispy);
+```
 
 ### Question 8: Use the grammar from the previous chapter to parse Doge. You must add start and end of input.
 
