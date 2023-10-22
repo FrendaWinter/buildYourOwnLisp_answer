@@ -1,10 +1,10 @@
 # Languages • Chapter 5
 
-
-
 ### First question: Write down some more examples of strings the Doge language contains.
 
 ### Question 2: Why are there back slashes \ in front of the quote marks " in the grammar?
+
+Because quote marks `"` is special character, so it need to have back slashes `\` before quote to make sure the language understands that it literally a quote
 
 ### Question 3: Why are there back slashes \ at the end of the line in the grammar?
 
