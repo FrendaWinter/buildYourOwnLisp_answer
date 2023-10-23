@@ -1,5 +1,7 @@
 # Languages • Chapter 5
 
+Online read link: https://buildyourownlisp.com/chapter5_languages
+
 ### First question: Write down some more examples of strings the Doge language contains.
 
 ### Question 2: Why are there back slashes \ in front of the quote marks " in the grammar?

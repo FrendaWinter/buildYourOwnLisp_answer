@@ -1,10 +1,10 @@
 # Parsing • Chapter 6
 
+Online read link: https://buildyourownlisp.com/chapter6_parsing
+
 Regex referent:
-
-To test: https://regex101.com/
-
-Quick learn: https://www.youtube.com/watch?v=rhzKDrUiJVk
+- To test: https://regex101.com/
+- Quick learn: https://www.youtube.com/watch?v=rhzKDrUiJVk
 
 ### Question 1: Write a regular expression matching strings of all a or b such as aababa or bbaa.
 
