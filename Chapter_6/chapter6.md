@@ -2,7 +2,7 @@
 
 Online read link: https://buildyourownlisp.com/chapter6_parsing
 
-Regex referent:
+Regex reference:
 - To test: https://regex101.com/
 - Quick learn: https://www.youtube.com/watch?v=rhzKDrUiJVk
 

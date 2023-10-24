@@ -146,9 +146,23 @@ long multiples(const long x, const long y)
 
 ### Question 8: Add the function min, which returns the smallest number. For example min 1 5 3 is 1.
 
+**S1**: `Syntax`
+
+```c
+operator : '+' | '-' | '*' | '/' | '%' | '^' | 'min' ; 
+```
+
+With `Semantics`, we will loop through all member of `expr` to find the `min`
 
 ### Question 9: Add the function max, which returns the biggest number. For example max 1 5 3 is 5.
 
+**S1**: `Syntax`
+
+```c
+operator : '+' | '-' | '*' | '/' | '%' | '^' | 'min' | 'max'; 
+```
+
+Same with `min`, we will loop through all member of `expr` to find the `max`
 
 ### Question 10: Change the minus operator - so that when it receives one argument it negates it.
 

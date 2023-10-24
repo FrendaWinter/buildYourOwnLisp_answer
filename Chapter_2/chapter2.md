@@ -1,7 +1,7 @@
 # Installation • Chapter 2
 
 ### ❓ First question: Change the Hello World! greeting given by your program to something different.
-Example and referent document for printing method in C
+Example and reference document for printing method in C
 ```c
 #include <stdio.h>
 
@@ -17,7 +17,7 @@ int main()
     // Another example with integer
     printf("%i: %s\n", 1, "one");
 
-    // Referent document
+    // Reference document
     printf("Ref for printf function: https://cplusplus.com/reference/cstdio/printf/\n");
     printf("Ref for escape sequence: https://www.geeksforgeeks.org/escape-sequence-in-c/\n");
     return 0;
@@ -50,7 +50,7 @@ undefined reference to `WinMain'
 
 ### ❓ Question 3: Use the online documentation to lookup the puts function.
 
-Referent document: https://en.cppreference.com/w/c/io/puts
+Reference document: https://en.cppreference.com/w/c/io/puts
 
 What is puts: pust is like print method, but it add newline at the end of string (It's also doesn't copy the null-terminated \0)
 
@@ -83,7 +83,7 @@ The GNU Debugger (GDB) is a portable debugger that runs on many Unix-like system
 
 Wiki page: https://en.wikipedia.org/wiki/GNU_Debugger
 
-Referent document: https://www.geeksforgeeks.org/gdb-step-by-step-introduction/
+Reference document: https://www.geeksforgeeks.org/gdb-step-by-step-introduction/
 
 Run Gdb with example code in Q3
 ```sh

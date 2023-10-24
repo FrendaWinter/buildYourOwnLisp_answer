@@ -1,5 +1,7 @@
 # Error Handling • Chapter 8
 
+Online read link: https://buildyourownlisp.com/chapter8_error_handling
+
 ### Question 1: Run the previous chapter's code through gdb and crash it. See what happens.
 
 
@@ -14,6 +16,7 @@
 
 ### Question 5: Can you use a union in the definition of lval?
 
+yes
 
 ### Question 6: Extend parsing and evaluation to support the remainder operator %.
 
