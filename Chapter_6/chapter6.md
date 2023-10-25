@@ -50,12 +50,13 @@ mpca_lang(MPCA_LANG_DEFAULT,
 
 ### Question 5: Change the grammar to recognise operators written in textual format add, sub, mul, div.
 
+If if we want the parser to accept, you need to use escape sequences of double quotes here
 ```c
 /* Change symbol operator to word operator */
 mpca_lang(MPCA_LANG_DEFAULT,
             "                                           \
     number   : /-?[0-9]+/ ;                             \
-    operator : 'add' | 'sub' | 'mul' | 'div' | 'rem' ;  \
+    operator : \"add\" | \"sub\" | \"mul\" | \"div\" | \"rem\" ;  \
     expr     : <number> | '(' <operator> <expr>+ ')' ;  \
     lispy    : /^/ <operator> <expr>+ /$/ ;             \
 ",

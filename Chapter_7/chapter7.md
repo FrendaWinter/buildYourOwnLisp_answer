@@ -149,20 +149,34 @@ long multiples(const long x, const long y)
 **S1**: `Syntax`
 
 ```c
-operator : '+' | '-' | '*' | '/' | '%' | '^' | 'min' ; 
+operator : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" ; 
 ```
 
 With `Semantics`, we will loop through all member of `expr` to find the `min`
+
+```c
+if (strcmp(op, "min") == 0)
+{
+    return (x < y) ? x : y;
+}
+```
 
 ### Question 9: Add the function max, which returns the biggest number. For example max 1 5 3 is 5.
 
 **S1**: `Syntax`
 
 ```c
-operator : '+' | '-' | '*' | '/' | '%' | '^' | 'min' | 'max'; 
+operator : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\"; 
 ```
 
 Same with `min`, we will loop through all member of `expr` to find the `max`
+
+```c
+if (strcmp(op, "max") == 0)
+{
+    return (x > y) ? x : y;
+}
+```
 
 ### Question 10: Change the minus operator - so that when it receives one argument it negates it.
 
