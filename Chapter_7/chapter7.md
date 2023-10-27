@@ -48,10 +48,7 @@ int number_of_leafs(mpc_ast_t *t)
 }
 ```
 
-
 ### Question 2: Write a recursive function to compute the number of branches of a tree.
-
-
 
 
 ### Question 3: Write a recursive function to compute the most number of children spanning from one branch of a tree.
@@ -59,9 +56,24 @@ int number_of_leafs(mpc_ast_t *t)
 
 ### Question 4: How would you use strstr to see if a node was tagged as an expr?
 
+This is from the code
+
+Because the tag can be long like `expr|number|regex` `operator|char` `char` `expr|>` 
+
+`strstr`	Takes as input two char* and returns a pointer to the location of the second in the first, or 0 if the second is not a sub-string of the first.
+
+-> So `strstr` is perfectly for this task
+```c
+strstr(t->tag, "expr")
+```
 
 ### Question 5: How would you use strcmp to see if a node had the contents '(' or ')'?
 
+Like Q4, we have
+
+```c
+strstr(t->contents, ")")
+```
 
 ## Before Q-6-7-8-9-10
 
@@ -180,9 +192,15 @@ if (strcmp(op, "max") == 0)
 
 ### Question 10: Change the minus operator - so that when it receives one argument it negates it.
 
+This just my solution, it not look pretty but it works.
 
+I check if the 3 child of expr is closing one or not (end of expression like `)`or end of our lisp tag contains only `regex`), if it does return negative immediately
 
-
-
-
-
+```c
+// Add this check in eval function
+if ((strcmp(t->children[i]->contents, ")") == 0 || strcmp(t->children[i]->tag, "regex") == 0) && strcmp(op, "-") == 0)
+{
+    printf("\nreturn: %li\n", -x);
+    return -x;
+}
+```
