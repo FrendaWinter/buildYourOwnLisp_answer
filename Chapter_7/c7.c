@@ -23,6 +23,14 @@ void add_history(char *unused) {}
 #include <editline/history.h>
 #endif
 
+// Multiples function
+long multiples(const long x, const long y)
+{
+    if (y == 0)
+        return 1;
+    return x * multiples(x, y - 1);
+}
+
 /* Use operator string to see which operation to perform */
 long eval_op(long x, char *op, long y)
 {
@@ -41,6 +49,14 @@ long eval_op(long x, char *op, long y)
     if (strcmp(op, "/") == 0)
     {
         return x / y;
+    }
+    if (strcmp(op, "%") == 0)
+    {
+        return x % y;
+    }
+    if (strcmp(op, "^") == 0)
+    {
+        return multiples(x, y);
     }
     if (strcmp(op, "min") == 0)
     {
@@ -96,7 +112,7 @@ int main(int argc, char **argv)
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                   \
     number   : /-?[0-9]+/ ;                                       \
-    operator : '+' | '-' | '*' | '/' | \"min\" | \"max\"  ;       \
+    operator : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\"  ;       \
     expr     : <number> | '(' <operator> <expr>+ ')' ;            \
     lispy    : /^/ <operator> <expr>+ /$/ ;                       \
     ",
