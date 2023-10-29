@@ -21,6 +21,7 @@ void add_history(char *unused) {}
 #else
 #include <editline/readline.h>
 #include <editline/history.h>
+// #include <histedit.h> for arch linux
 #endif
 
 // Multiples function

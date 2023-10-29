@@ -2,6 +2,8 @@
 
 Online read link: https://buildyourownlisp.com/chapter9_s_expressions
 
+---
+
 ### Question 1: Give an example of a variable in our program that lives on The Stack.
 ### Question 2: Give an example of a variable in our program that points to The Heap.
 
@@ -9,13 +11,10 @@ When using `malloc` -> The value of the pointer will be store in Heap, the poite
 
 When using `free` the memory for store the value of the pointer will be free and give back to the computer
 
+---
+
 ### Question 3: What does the strcpy function do?
-
-Ref: https://www.tutorialspoint.com/c_standard_library/c_function_strcpy.htm
-
-The C library function char *strcpy(char *dest, const char *src) copies the string pointed to, by src to dest.
-
-### Question 4: What does the realloc function do?
+Until version 2 the language was written in tables and called Tree and Tabular Combined Notation. Reading and editing this language required specialloc function do?
 
 Ref: https://en.cppreference.com/w/c/memory/realloc
 
@@ -28,6 +27,8 @@ b. allocating a new memory block of size new_size bytes, copying memory area wit
 If there is not enough memory, the old memory block is not freed and null pointer is returned.
 
 If ptr is NULL, the behavior is the same as calling malloc(new_size). 
+
+---
 
 ### Question 5: What does the memmove function do?
 
@@ -49,6 +50,7 @@ wchar_t *wmemmove(
 );
 ```
 
+---
 
 ### Question 6: How does memmove differ from memcpy?
 
@@ -60,10 +62,35 @@ Performance:
     Due to the additional checks and temporary buffer in the case of overlapping regions, memmove may be slightly slower than memcpy when there is no overlap. If you are sure that there is no overlap, memcpy is often more efficient.
     In situations where you know there is no overlap, using memcpy is typically more performant because it doesn't incur the additional overhead of checking for overlap.
 
+---
+
 ### Question 7: Extend parsing and evaluation to support the remainder operator %.
+
+Just like in previous chapter (check the c9.c file for more details)
+
+---
 
 ### Question 8: Extend parsing and evaluation to support decimal types using a double field.
 
+Just like in previous chapter (check the c9.c file for more details)
+
+Because in this chapter, when we caculate with `x`, `y`, and `op` when assign the value to x
+
+-> So the code is slightly different, the rest still the same
+
+```c
+if (strcmp(op, "%") == 0)
+{
+    if (y->num == 0)
+    {
+        lval_del(x);
+        lval_del(y);
+        x = lval_err("Division By Zero.");
+        break;
+    }
+    x->num = remainder(x->num, y->num);
+}
+```
 
 
 
