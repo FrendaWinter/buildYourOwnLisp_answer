@@ -34,8 +34,46 @@ Online read link: https://buildyourownlisp.com/chapter11_variables
 ```
 
 ### Question 4: Change printing a builtin function so that it prints its name.
+
+
 ### Question 5: Write a function for printing out all the named values in an environment.
+
+Just like print `lval`, we create two function to print `lenv`
+
+Take a look at the struct lenv first
+
+```c
+struct lenv
+{
+    int count; // Number of member
+    char **syms; // List of symbol of member
+    lval **vals; // List of value of member
+};
+```
+
+```c
+void lenv_print(lenv *e)
+{
+    puts("-----------------------------------");
+    // Loop throught all value of lenv, print with format `<sym>: <value>``
+    for (int i = 0; i < e->count; i++)
+    {
+        printf("%s: ", e->syms[i]);
+        lval_print(e->vals[i]);
+        putchar('\n');
+    }
+    puts("-----------------------------------");
+}
+
+void lenv_println(lenv *e)
+{
+    lenv_print(e);
+    putchar('\n');
+}
+```
+
+**Those two functions need to define after the declaration of lenv or it will return `error: invalid use of incomplete typedef ‘lenv’`**
+
 ### Question 6: Redefine one of the builtin variables to something different.
 ### Question 7: Change redefinition of one of the builtin variables to something different an error.
 ### Question 8: Create an exit function for stopping the prompt and exiting.
-

@@ -20,7 +20,8 @@ void add_history(char *unused) {}
 
 #else
 #include <editline/readline.h>
-#include <editline/history.h>
+#include <histedit.h>
+// #include <editline/history.h> for other linux (My is Arch -> So `histedit.h`)
 #endif
 
 /* Forward Declarations */
@@ -96,10 +97,12 @@ lval *lval_sym(char *s)
     return v;
 }
 
-lval *lval_fun(lbuiltin func)
+lval *lval_fun(lbuiltin func, char *name)
 {
     lval *v = malloc(sizeof(lval));
+    // printf("Function: %s", name);
     v->type = LVAL_FUN;
+    v->sym = name;
     v->fun = func;
     return v;
 }
@@ -162,6 +165,8 @@ lval *lval_copy(lval *v)
     /* Copy Functions and Numbers Directly */
     case LVAL_FUN:
         x->fun = v->fun;
+        printf("Copy %s\n", v->sym);
+        x->sym = v->sym;
         break;
     case LVAL_NUM:
         x->num = v->num;
@@ -250,7 +255,9 @@ void lval_print(lval *v)
     switch (v->type)
     {
     case LVAL_FUN:
-        printf("<function>");
+        printf("Function: %s", v->sym);
+        // printf("<function>");
+        // lval_print(v->cell[0]);
         break;
     case LVAL_NUM:
         printf("%li", v->num);
@@ -377,6 +384,24 @@ void lenv_put(lenv *e, lval *k, lval *v)
     e->vals[e->count - 1] = lval_copy(v);
     e->syms[e->count - 1] = malloc(strlen(k->sym) + 1);
     strcpy(e->syms[e->count - 1], k->sym);
+}
+
+void lenv_print(lenv *e)
+{
+    puts("-----------------------------------");
+    for (int i = 0; i < e->count; i++)
+    {
+        printf("%s: ", e->syms[i]);
+        lval_print(e->vals[i]);
+        putchar('\n');
+    }
+    puts("-----------------------------------");
+}
+
+void lenv_println(lenv *e)
+{
+    lenv_print(e);
+    putchar('\n');
 }
 
 /* Builtins */
@@ -536,6 +561,13 @@ lval *builtin_div(lenv *e, lval *a)
     return builtin_op(e, a, "/");
 }
 
+lval *builtin_exit(lenv *e, lval *a)
+{
+    lval_del(a);
+    lenv_del(e);
+    return NULL;
+}
+
 lval *builtin_def(lenv *e, lval *a)
 {
 
@@ -572,7 +604,7 @@ lval *builtin_def(lenv *e, lval *a)
 void lenv_add_builtin(lenv *e, char *name, lbuiltin func)
 {
     lval *k = lval_sym(name);
-    lval *v = lval_fun(func);
+    lval *v = lval_fun(func, k->sym);
     lenv_put(e, k, v);
     lval_del(k);
     lval_del(v);
@@ -595,6 +627,9 @@ void lenv_add_builtins(lenv *e)
     lenv_add_builtin(e, "-", builtin_sub);
     lenv_add_builtin(e, "*", builtin_mul);
     lenv_add_builtin(e, "/", builtin_div);
+
+    /* Utils Functions */
+    lenv_add_builtin(e, "exit", builtin_exit);
 }
 
 /* Evaluation */
@@ -645,6 +680,7 @@ lval *lval_eval_sexpr(lenv *e, lval *v)
 
 lval *lval_eval(lenv *e, lval *v)
 {
+    // Get variable match symbols
     if (v->type == LVAL_SYM)
     {
         lval *x = lenv_get(e, v);
@@ -717,7 +753,7 @@ lval *lval_read(mpc_ast_t *t)
         }
         x = lval_add(x, lval_read(t->children[i]));
     }
-
+    // lval_println(x);
     return x;
 }
 
@@ -760,7 +796,9 @@ int main(int argc, char **argv)
         if (mpc_parse("<stdin>", input, Lispy, &r))
         {
             lval *x = lval_eval(e, lval_read(r.output));
+            // mpc_ast_print(r.output);
             lval_println(x);
+            // lenv_println(e);
             lval_del(x);
             mpc_ast_delete(r.output);
         }

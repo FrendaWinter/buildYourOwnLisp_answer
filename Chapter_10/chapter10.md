@@ -62,7 +62,7 @@ if (v->count == 1)
 
 ### Question 5: Add a builtin function len that returns the number of elements in a Q-Expression.
 
-Add new symbols to the list
+Add new symbols to the language
 
 ```sh
 symbol : \"list\" | \"head\" | \"tail\" | \"eval\" | \"len\" \
@@ -70,6 +70,7 @@ symbol : \"list\" | \"head\" | \"tail\" | \"eval\" | \"len\" \
 ```
 
 Add buildin function for `len`
+
 ```c
 // Like the builtin_head function, but we only need to return length of the q-expression we evaluated
 lval *builtin_len(lval *a)
@@ -85,3 +86,30 @@ lval *builtin_len(lval *a)
 ```
 
 ### Question 6: Add a builtin function init that returns all of a Q-Expression except the final element.
+
+
+Add new symbols to the language
+
+```sh
+symbol : \"list\" | \"head\" | \"tail\" | \"eval\" | \"len\" | \"init\" \
+    | \"join\" | '+' | '-' | '*' | '/' ;        \
+```
+
+Add buildin function for `init`
+
+```c
+// Like the builtin_head function, but we need pop out the last cell and remove it from q-expr
+lval *builtin_init(lval *a)
+{
+    LASSERT(a, a->count == 1,
+            "Function 'init' passed too many arguments.");
+    LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
+            "Function 'init' passed incorrect type.");
+    LASSERT(a, a->cell[0]->count != 0,
+            "Function 'init' passed {}.");
+
+    lval *v = lval_take(a, 0);
+    lval_del(lval_pop(v, v->count - 1));
+    return v;
+}
+```

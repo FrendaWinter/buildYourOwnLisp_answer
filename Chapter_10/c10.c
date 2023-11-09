@@ -1,5 +1,3 @@
-
-
 #include "mpc.h"
 
 #ifdef _WIN32
@@ -126,6 +124,7 @@ lval *lval_add(lval *v, lval *x)
     return v;
 }
 
+// Pop the element at index and return it
 lval *lval_pop(lval *v, int i)
 {
     lval *x = v->cell[i];
@@ -223,6 +222,20 @@ lval *builtin_len(lval *a)
     LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
             "Function 'head' passed incorrect type.");
     return lval_num(a->cell[0]->count);
+}
+
+lval *builtin_init(lval *a)
+{
+    LASSERT(a, a->count == 1,
+            "Function 'init' passed too many arguments.");
+    LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
+            "Function 'init' passed incorrect type.");
+    LASSERT(a, a->cell[0]->count != 0,
+            "Function 'init' passed {}.");
+
+    lval *v = lval_take(a, 0);
+    lval_del(lval_pop(v, v->count - 1));
+    return v;
 }
 
 lval *builtin_head(lval *a)
@@ -347,6 +360,10 @@ lval *builtin(lval *a, char *func)
     if (strcmp("len", func) == 0)
     {
         return builtin_len(a);
+    }
+    if (strcmp("init", func) == 0)
+    {
+        return builtin_init(a);
     }
     if (strcmp("list", func) == 0)
     {
@@ -512,7 +529,7 @@ int main(int argc, char **argv)
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                    \
       number : /-?[0-9]+/ ;                              \
-      symbol : \"list\" | \"head\" | \"tail\" | \"eval\" | \"len\" \
+      symbol : \"list\" | \"head\" | \"tail\" | \"eval\" | \"len\" | \"init\" \
              | \"join\" | '+' | '-' | '*' | '/' ;        \
       sexpr  : '(' <expr>* ')' ;                         \
       qexpr  : '{' <expr>* '}' ;                         \
