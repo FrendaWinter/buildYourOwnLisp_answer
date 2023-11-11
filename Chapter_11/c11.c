@@ -165,8 +165,10 @@ lval *lval_copy(lval *v)
     /* Copy Functions and Numbers Directly */
     case LVAL_FUN:
         x->fun = v->fun;
-        printf("Copy %s\n", v->sym);
-        x->sym = v->sym;
+        // printf("Copy %s\n", v->sym);
+        x->sym = malloc(strlen(v->sym) + 1);
+        strcpy(x->sym, v->sym);
+        // printf("Return %s\n", x->sym);
         break;
     case LVAL_NUM:
         x->num = v->num;
@@ -563,9 +565,14 @@ lval *builtin_div(lenv *e, lval *a)
 
 lval *builtin_exit(lenv *e, lval *a)
 {
+    LASSERT_TYPE("exit", a, 0, LVAL_NUM);
+
+    LASSERT(a, (a->cell[0]->num == 1 || a->cell[0]->num == 0),
+            "Function 'exit' passed invalid arguments. Got % i, Expected 1 or 0.", a->cell[0]->num);
+
     lval_del(a);
-    lenv_del(e);
-    return NULL;
+    // printf("Call exit\n");
+    exit(1);
 }
 
 lval *builtin_def(lenv *e, lval *a)
@@ -639,6 +646,7 @@ lval *lval_eval_sexpr(lenv *e, lval *v)
 
     for (int i = 0; i < v->count; i++)
     {
+        printf("Eval cell %i\n", i);
         v->cell[i] = lval_eval(e, v->cell[i]);
     }
 
@@ -685,10 +693,12 @@ lval *lval_eval(lenv *e, lval *v)
     {
         lval *x = lenv_get(e, v);
         lval_del(v);
+        printf("Return Sym\n");
         return x;
     }
     if (v->type == LVAL_SEXPR)
     {
+        printf("Return S-Expr\n");
         return lval_eval_sexpr(e, v);
     }
     return v;
