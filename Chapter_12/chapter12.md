@@ -33,6 +33,28 @@ lispy> second {13 4224 5323 43}
 ```
 
 ### Question 3: Define a Lisp function that calls a function with two arguments in reverse order.
+
+So, the idea for this question is it take three argument, the first is the function name and the other is the argument for that function
+
+Then we `eval` the function with reverse order of two argument
+
+Here is my test
+
+```
+lispy> def {rv} (\ {x y z} {eval {x z y}})
+()
+lispy> def {sub} (\ {x y} {- x y})
+()
+lispy> sub 32 4
+28
+lispy> rv sub 32 4
+-28
+```
+
+The `eval` take Q-expr of `x z y`, so it `eval` (func_x y z)
+
+Or we can shorten the syntax `def {rv} (\ {x y z} {(x z y)})`
+
 ### Question 4: Define a Lisp function that calls a function with arguments, then passes the result to another function.
 ### Question 5: Define a builtin_fun C function that is equivalent to the Lisp fun function.
 ### Question 6: Change variable arguments so at least one extra argument must be supplied before it is evaluated.
