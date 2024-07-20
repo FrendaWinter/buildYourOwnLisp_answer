@@ -3,7 +3,35 @@
 Online read link: https://buildyourownlisp.com/chapter12_functions
 
 ### Question 1: Define a Lisp function that returns the first element from a list.
+
+The idea for this function is it take one argument, the argument is Q-expr, and we return the head of that argument
+
+`def {head} (\ {x} {head x})`
+
+So, here is the output
+
+```
+lispy> def {first} (\ {x} {head x})
+()
+lispy> first {13 435 623 0}
+{13}   
+```
+
 ### Question 2: Define a Lisp function that returns the second element from a list.
+
+Same idead with the first question, to get the second element of x, we can get the head of the tail of x
+
+`def {head} (\ {x} {head (tail x)})`
+
+So the output will be
+
+```
+lispy> def {second} (\ {x} {head (tail x)})
+()
+lispy> second {13 4224 5323 43}
+{4224}
+```
+
 ### Question 3: Define a Lisp function that calls a function with two arguments in reverse order.
 ### Question 4: Define a Lisp function that calls a function with arguments, then passes the result to another function.
 ### Question 5: Define a builtin_fun C function that is equivalent to the Lisp fun function.
