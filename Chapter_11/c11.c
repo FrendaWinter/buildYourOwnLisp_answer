@@ -1,5 +1,3 @@
-
-
 #include "mpc.h"
 
 #ifdef _WIN32
@@ -459,7 +457,11 @@ lval *builtin_tail(lenv *e, lval *a)
     LASSERT_NOT_EMPTY("tail", a, 0);
 
     lval *v = lval_take(a, 0);
-    lval_del(lval_pop(v, 0));
+    
+    int count = v->count;
+    for (int i = 0;i < count - 1; i++) {
+        lval_del(lval_pop(v, 0));
+    }
     return v;
 }
 
@@ -646,7 +648,6 @@ lval *lval_eval_sexpr(lenv *e, lval *v)
 
     for (int i = 0; i < v->count; i++)
     {
-        printf("Eval cell %i\n", i);
         v->cell[i] = lval_eval(e, v->cell[i]);
     }
 
@@ -693,12 +694,10 @@ lval *lval_eval(lenv *e, lval *v)
     {
         lval *x = lenv_get(e, v);
         lval_del(v);
-        printf("Return Sym\n");
         return x;
     }
     if (v->type == LVAL_SEXPR)
     {
-        printf("Return S-Expr\n");
         return lval_eval_sexpr(e, v);
     }
     return v;

@@ -117,6 +117,8 @@ struct lenv
 };
 ```
 
+So the function to print all variable in lenv is
+
 ```c
 void lenv_print(lenv *e)
 {
@@ -143,7 +145,71 @@ void lenv_println(lenv *e)
 ---
 
 ### Question 6: Redefine one of the builtin variables to something different.
+
+In this question, I will change the builtin variable `tail` to something different
+
+`tail` will return the last token of Q-expr, not all token after the first
+
+So, take a look at the original function
+
+```c 
+lval* builtin_tail(lenv* e, lval* a) {
+    
+    // Validation part
+    LASSERT_NUM("tail", a, 1);
+    LASSERT_TYPE("tail", a, 0, LVAL_QEXPR);
+    LASSERT_NOT_EMPTY("tail", a, 0);
+
+    lval* v = lval_take(a, 0); // Copy lval a to lval v  
+    lval_del(lval_pop(v, 0)); // Delete the first token of lval v
+    return v; // Return v
+}
+```
+
+So to only take the last token, not the whole tail, we need to delete all the token before the last one.
+
+To do that, we get the length of v first, then we delete all until remain the last one.
+
+```c 
+lval* builtin_tail(lenv* e, lval* a) {
+    
+    // Validation part
+    LASSERT_NUM("tail", a, 1);
+    LASSERT_TYPE("tail", a, 0, LVAL_QEXPR);
+    LASSERT_NOT_EMPTY("tail", a, 0);
+
+    lval* v = lval_take(a, 0); // Copy lval a to lval v  
+    
+    int count = v->count;
+    for (int i = 0;i < count - 1; i++) { // loop from 0 to the index before the last element
+        lval_del(lval_pop(v, 0)); // Delete all token before the last one
+    }
+    return v; // Return v
+}
+```
+
+So we got the function, let run it and print more detail
+
+```
+lispy> tail {1 2 3 4}
+----------------
+{1 2 3 4}
+----------------
+{2 3 4}
+----------------
+{3 4}
+----------------
+{4}
+----------------
+{4}
+```
+
+It will delete each token until the last one as we expect
+
+
 ### Question 7: Change redefinition of one of the builtin variables to something different an error.
+
+
 
 ---
 
