@@ -490,16 +490,18 @@ lval* builtin_var(lenv* e, lval* a, char* func) {
     "Function '%s' passed too many arguments for symbols. "
     "Got %i, Expected %i.", func, syms->count, a->count-1);
     
+  printf("----------------------------\n");
+  lval_println(syms);
+  printf("----------------------------\n");
+  lval_println(a);
+  printf("----------------------------\n");
+
   for (int i = 0; i < syms->count; i++) {
     /* If 'def' define in globally. If 'put' define in locally */
     if (strcmp(func, "def") == 0) {
       lenv_def(e, syms->cell[i], a->cell[i+1]);
     }
-    
-    if (strcmp(func, "fun") == 0) {
-      lenv_def(e, syms->cell[i], a->cell[i+1]);
-    }   
-    
+   
     if (strcmp(func, "=")   == 0) {
       lenv_put(e, syms->cell[i], a->cell[i+1]);
     } 
@@ -513,8 +515,32 @@ lval* builtin_def(lenv* e, lval* a) {
   return builtin_var(e, a, "def");
 }
 
-lval* builtin_def(lenv* e, lval* a) {
-  return builtin_var(e, a, "fun");
+lval* builtin_fun(lenv* e, lval* a) {
+  char* func = "fun";
+  LASSERT_TYPE(func, a, 0, LVAL_QEXPR);
+  
+  lval* syms = a->cell[0];
+  for (int i = 0; i < syms->count; i++) {
+    LASSERT(a, (syms->cell[i]->type == LVAL_SYM),
+      "Function '%s' cannot define non-symbol. "
+      "Got %s, Expected %s.", func, 
+      ltype_name(syms->cell[i]->type), ltype_name(LVAL_SYM));
+  }
+  
+  printf("----------------------------\n");
+  lval_println(syms);
+  printf("----------------------------\n");
+  lval_println(a);
+  printf("----------------------------\n");
+
+  // Put function name and body to lenv
+  // Should join parameters and boby to lambda
+  for (int i = 0; i < syms->count; i++) {
+    lval_println(syms->cell[i]);
+  }
+  
+  lval_del(a);
+  return lval_sexpr();
 }
 
 lval* builtin_put(lenv* e, lval* a) {
@@ -552,7 +578,7 @@ void lenv_add_builtins(lenv* e) {
   lenv_add_builtin(e, "\\",  builtin_lambda); 
   lenv_add_builtin(e, "def", builtin_def);
   lenv_add_builtin(e, "=",   builtin_put);
-  lenv_add_builtin(e, "fun", builtin_def);
+  lenv_add_builtin(e, "fun", builtin_fun);
 
   /* List Functions */
   lenv_add_builtin(e, "list", builtin_list);
@@ -575,6 +601,12 @@ lval* lval_call(lenv* e, lval* f, lval* a) {
   /* If Builtin then simply apply that */
   if (f->builtin) { return f->builtin(e, a); }
   
+  printf("f: \n");
+  lval_println(f);
+  
+  printf("a: \n");
+  lval_println(a);
+
   /* Record Argument Counts */
   int given = a->count;
   int total = f->formals->count;
@@ -765,6 +797,7 @@ int main(int argc, char** argv) {
     if (mpc_parse("<stdin>", input, Lispy, &r)) {
       lval* x = lval_eval(e, lval_read(r.output));
       lval_println(x);
+      lenv_println(e);
       lval_del(x);
       mpc_ast_delete(r.output);
     } else {    
