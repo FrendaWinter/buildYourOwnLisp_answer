@@ -496,6 +496,10 @@ lval* builtin_var(lenv* e, lval* a, char* func) {
       lenv_def(e, syms->cell[i], a->cell[i+1]);
     }
     
+    if (strcmp(func, "fun") == 0) {
+      lenv_def(e, syms->cell[i], a->cell[i+1]);
+    }   
+    
     if (strcmp(func, "=")   == 0) {
       lenv_put(e, syms->cell[i], a->cell[i+1]);
     } 
@@ -509,8 +513,31 @@ lval* builtin_def(lenv* e, lval* a) {
   return builtin_var(e, a, "def");
 }
 
+lval* builtin_def(lenv* e, lval* a) {
+  return builtin_var(e, a, "fun");
+}
+
 lval* builtin_put(lenv* e, lval* a) {
   return builtin_var(e, a, "=");
+}
+
+void lenv_print(lenv *e)
+{
+    puts("-----------------------------------");
+    // Loop throught all value of lenv, print with format `<sym>: <value>``
+    for (int i = 0; i < e->count; i++)
+    {
+        printf("%s: ", e->syms[i]);
+        lval_print(e->vals[i]);
+        putchar('\n');
+    }
+    puts("-----------------------------------");
+}
+
+void lenv_println(lenv *e)
+{
+    lenv_print(e);
+    putchar('\n');
 }
 
 void lenv_add_builtin(lenv* e, char* name, lbuiltin func) {
@@ -525,7 +552,8 @@ void lenv_add_builtins(lenv* e) {
   lenv_add_builtin(e, "\\",  builtin_lambda); 
   lenv_add_builtin(e, "def", builtin_def);
   lenv_add_builtin(e, "=",   builtin_put);
-  
+  lenv_add_builtin(e, "fun", builtin_def);
+
   /* List Functions */
   lenv_add_builtin(e, "list", builtin_list);
   lenv_add_builtin(e, "head", builtin_head);
