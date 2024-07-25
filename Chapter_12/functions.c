@@ -527,17 +527,11 @@ lval* builtin_fun(lenv* e, lval* a) {
       ltype_name(syms->cell[i]->type), ltype_name(LVAL_SYM));
   }
   
-  printf("----------------------------\n");
-  lval_println(syms);
-  printf("----------------------------\n");
-  lval_println(a);
-  printf("----------------------------\n");
-
-  // Put function name and body to lenv
-  // Should join parameters and boby to lambda
-  for (int i = 0; i < syms->count; i++) {
-    lval_println(syms->cell[i]);
-  }
+  // Get the name of function and build lval_lambda from input
+  // Then add new function to global environment 
+  lval* func_name = lval_pop(syms, 0);
+  lval* func_body = lval_lambda(syms, a->cell[1]);
+  lenv_def(e, func_name, func_body);
   
   lval_del(a);
   return lval_sexpr();
