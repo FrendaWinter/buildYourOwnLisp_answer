@@ -84,5 +84,46 @@ lispy> compose add square 32 32
 ```
 
 ### Question 5: Define a builtin_fun C function that is equivalent to the Lisp fun function.
+
+First we add the declaration for the builtin_fun function
+
+```c
+lenv_add_builtin(e, "fun", builtin_fun);
+```
+This will have similar approach with the `builtin_var` function
+
+To easy imagine what need to check, here is the sample `fun {add x y} {+ x y}`
+
+1. First, we check first argument is Q-expr ( `{add x y}` must be Q-expr ).
+2. Then we check in first argument, each element should be symbol.
+3. We extract the function name from first argument.
+4. Then we create new `lval_lambda` from the leftover of first argument and second argument
+    - First argument as formals
+    - Second argument as body
+
+```c
+lval* builtin_fun(lenv* e, lval* a) {
+  char* func = "fun";
+  LASSERT_TYPE(func, a, 0, LVAL_QEXPR);
+  
+  lval* syms = a->cell[0];
+  for (int i = 0; i < syms->count; i++) {
+    LASSERT(a, (syms->cell[i]->type == LVAL_SYM),
+      "Function '%s' cannot define non-symbol. "
+      "Got %s, Expected %s.", func, 
+      ltype_name(syms->cell[i]->type), ltype_name(LVAL_SYM));
+  }
+  
+  // Get the name of function and build lval_lambda from input
+  // Then add new function to global environment 
+  lval* func_name = lval_pop(syms, 0);
+  lval* func_body = lval_lambda(syms, a->cell[1]);
+  lenv_def(e, func_name, func_body);
+  
+  lval_del(a);
+  return lval_sexpr();
+}
+```
+
 ### Question 6: Change variable arguments so at least one extra argument must be supplied before it is evaluated.
 

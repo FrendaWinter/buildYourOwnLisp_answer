@@ -489,13 +489,7 @@ lval* builtin_var(lenv* e, lval* a, char* func) {
   LASSERT(a, (syms->count == a->count-1),
     "Function '%s' passed too many arguments for symbols. "
     "Got %i, Expected %i.", func, syms->count, a->count-1);
-    
-  printf("----------------------------\n");
-  lval_println(syms);
-  printf("----------------------------\n");
-  lval_println(a);
-  printf("----------------------------\n");
-
+  
   for (int i = 0; i < syms->count; i++) {
     /* If 'def' define in globally. If 'put' define in locally */
     if (strcmp(func, "def") == 0) {
