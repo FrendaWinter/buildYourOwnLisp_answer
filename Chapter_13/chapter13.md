@@ -59,9 +59,38 @@ lval* builtin_not(lenv* e, lval* a) {
 }
 
 ```
+---
 
 ### Question 2: Define a recursive Lisp function that returns the nth item of that list.
+
+The idea is counting n to 0 and reduce the list by one element then return head of the list.
+
+`def {nth} (\ {n list} {if (== n 0) {head list} {(nth (- n 1) (tail list))}})`
+
+Base Case: If n is 0, the function returns the first item of the list (head list).
+
+Recursive Case: If n is greater than 0, the function recursively calls itself with n-1 and the rest of the list (tail list).
+
+```
+# Testing
+
+lispy> def {nth} (\ {n list} {if (== n 0) {head list} {(nth (- n 1) (tail list))}})
+()
+lispy> nth 3 {1 432 5 213 234}
+{213}
+lispy> nth 0 {1 432 5 213 234}
+{1}
+lispy> nth 7 {1 432 5 213 234}
+Error: Function 'tail' passed {} for argument 0.
+
+```
+
+---
+
 ### Question 3: Define a recursive Lisp function that returns 1 if an element is a member of a list, otherwise 0.
+
+---
+
 ### Question 4: Define a Lisp function that returns the last element of a list.
 ### Question 5: Define in Lisp logical operator functions such as or, and and not.
 ### Question 6: Add a specific boolean type to the language with the builtin variables true and false.
