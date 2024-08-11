@@ -89,8 +89,30 @@ Error: Function 'tail' passed {} for argument 0.
 
 ### Question 3: Define a recursive Lisp function that returns 1 if an element is a member of a list, otherwise 0.
 
+`def {isMember} (\ {x l} { if (== l {}) {0} { if (== (eval (head l)) x) {1} {isMember x (tail l)} } } )`
+
+The idea for this function is 
+- First if check the list is empty then return 0
+- The second if checks if the head of the list match the element that we looking for, then return 1
+    - Otherwise, it recursively check the rest (tail) of the list
+
 ---
 
 ### Question 4: Define a Lisp function that returns the last element of a list.
+
+`def {last} (\ {l} {if (== (tail l) {}) {head l} {last (tail l)} } )`
+
+The idea for this function is 
+- Check if the tail of the list is empty, it mean that the list have only one left element
+    - If true, return head of that list (the only element left)
+    - Otherwise, it recursively loop through the rest (tail) of the list
+
+---
+
 ### Question 5: Define in Lisp logical operator functions such as or, and and not.
+
+It is the same with Q1, but we define the operator is `and` `or` `not`, instead of `&&` `||` `!`
+
+---
+
 ### Question 6: Add a specific boolean type to the language with the builtin variables true and false.
