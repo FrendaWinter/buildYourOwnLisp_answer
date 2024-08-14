@@ -4,6 +4,33 @@ Online read link: https://buildyourownlisp.com/chapter14_strings
 
 ### Question 1: Adapt the builtin function join to work on strings.
 
+```
+lispy> join "Hello" "World"
+Error: Function 'join' passed incorrect type for argument 0. Got String, Expected Q-Expression.
+```
+
+
+```c
+ switch (x->type) {
+    case LVAL_QEXPR:
+      for (int i = 0; i < a->count; i++) {
+        LASSERT_TYPE("join", a, i + 1, LVAL_QEXPR);
+      }    
+      break;
+    case LVAL_STR:
+      for (int i = 0; i < a->count; i++) {
+        LASSERT_TYPE("join", a, i + 1, LVAL_STR);
+      }
+      break;
+    default:
+      lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "join", 0, 
+        ltype_name(x->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+      lval_del(a);
+      return err;  
+  }
+ 
+```
+ 
 ---
 
 ### Question 2: Adapt the builtin function head to work on strings.
