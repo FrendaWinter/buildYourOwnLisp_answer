@@ -205,11 +205,9 @@ lval* lval_copy(lval* v) {
 
 lval* lval_add(lval* v, lval* x) {
   if (v->type == LVAL_STR && x->type == LVAL_STR) {
-    v->str = realloc(v->str, strlen(v->str) + strlen(x->str) + 2);
+    v->str = realloc(v->str, sizeof(char) * ( strlen(v->str) + strlen(x->str) + 1));
     strcat(v->str, " ");
     strcat(v->str, x->str);
-    printf("strlen: %i", strlen(v->str));
-    printf("size: %i", sizeof(*(v->str)));
   } else {
     v->count++;
     v->cell = realloc(v->cell, sizeof(lval*) * v->count);
@@ -223,15 +221,15 @@ void lval_println(lval*);
 lval* lval_join(lval* x, lval* y) {
   if (y->type == LVAL_STR) {
     x = lval_add(x, y);
+    lval_del(y);
   } 
   else {
     for (int i = 0; i < y->count; i++) {  
       x = lval_add(x, y->cell[i]);
     }
+    free(y->cell);
+    free(y); 
   }
-  
-  free(y->cell);
-  free(y);  
   return x;
 }
 
