@@ -434,6 +434,10 @@ void lenv_def(lenv* e, lval* k, lval* v) {
   LASSERT(args, args->cell[index]->count != 0, \
     "Function '%s' passed {} for argument %i.", func, index);
 
+#define LASSERT_NOT_EMPTY_STR(func, args, index) \
+  LASSERT(args, strcmp(args->cell[index]->str, ""), \
+    "Function '%s' passed empty string for argument %i.", func, index);
+
 lval* lval_eval(lenv* e, lval* v);
 
 lval* builtin_lambda(lenv* e, lval* a) {
@@ -461,21 +465,63 @@ lval* builtin_list(lenv* e, lval* a) {
 
 lval* builtin_head(lenv* e, lval* a) {
   LASSERT_NUM("head", a, 1);
-  LASSERT_TYPE("head", a, 0, LVAL_QEXPR);
-  LASSERT_NOT_EMPTY("head", a, 0);
-  
-  lval* v = lval_take(a, 0);  
-  while (v->count > 1) { lval_del(lval_pop(v, 1)); }
+
+  // Validate data type of input for join, must be Q-expr or String
+  switch (a->cell[0]->type) {
+    case LVAL_QEXPR:
+      LASSERT_TYPE("head", a, 0, LVAL_QEXPR);
+      LASSERT_NOT_EMPTY("head", a, 0);
+      break;
+    case LVAL_STR:
+      LASSERT_TYPE("head", a, 0, LVAL_STR);
+      LASSERT_NOT_EMPTY_STR("head", a, 0);
+      break;
+    default:
+      lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "head", 0, ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+      lval_del(a);
+      return err;  
+  }
+
+  lval* v = lval_take(a, 0);
+  if (v->type == LVAL_QEXPR) {
+    while (v->count > 1) { lval_del(lval_pop(v, 1)); }
+  } else {
+    char tmp = v->str[0];
+    printf("%s\n", tmp);
+    // v->str = realloc(v->str, sizeof(char));
+    v->str[0] = tmp;
+  }
   return v;
 }
 
 lval* builtin_tail(lenv* e, lval* a) {
   LASSERT_NUM("tail", a, 1);
-  LASSERT_TYPE("tail", a, 0, LVAL_QEXPR);
-  LASSERT_NOT_EMPTY("tail", a, 0);
+
+  // Validate data type of input for join, must be Q-expr or String
+  switch (a->cell[0]->type) {
+    case LVAL_QEXPR:
+      LASSERT_TYPE("tail", a, 0, LVAL_QEXPR);
+      LASSERT_NOT_EMPTY("tail", a, 0);
+      break;
+    case LVAL_STR:
+      LASSERT_TYPE("tail", a, 0, LVAL_STR);
+      LASSERT_NOT_EMPTY_STR("tail", a, 0);
+      break;
+    default:
+      lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "tail", 0, ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+      lval_del(a);
+      return err;  
+  }
 
   lval* v = lval_take(a, 0);  
-  lval_del(lval_pop(v, 0));
+  if (v->type == LVAL_QEXPR) {
+    lval_del(lval_pop(v, 0));
+  } else {
+    for (int i = 0; i < strlen(v->str) - 1; i++) {
+      v->str[i] = v->str[i+1];
+    }
+    v->str = realloc(v->str, sizeof(char) * (strlen(v->str) - 1));
+  }
   return v;
 }
 

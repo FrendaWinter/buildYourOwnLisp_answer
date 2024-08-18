@@ -97,6 +97,36 @@ lval* lval_add(lval* v, lval* x) {
 
 ### Question 2: Adapt the builtin function head to work on strings.
 
+```c
+lval* builtin_head(lenv* e, lval* a) {
+  LASSERT_NUM("head", a, 1);
+
+  // Validate data type of input for join, must be Q-expr or String
+  switch (a->cell[0]->type) {
+    case LVAL_QEXPR:
+      LASSERT_TYPE("head", a, 0, LVAL_QEXPR);
+      LASSERT_NOT_EMPTY("head", a, 0);
+      break;
+    case LVAL_STR:
+      LASSERT_TYPE("head", a, 0, LVAL_STR);
+      LASSERT_NOT_EMPTY_STR("head", a, 0);
+      break;
+    default:
+      lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "head", 0, ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+      lval_del(a);
+      return err;  
+  }
+
+  lval* v = lval_take(a, 0);
+  if (v->type == LVAL_QEXPR) {
+    while (v->count > 1) { lval_del(lval_pop(v, 1)); }
+  } else {
+    v->str = realloc(v->str, sizeof(char));
+  }
+  return v;
+}
+```
+
 ---
 
 ### Question 3: Adapt the builtin function tail to work on strings.
