@@ -486,10 +486,11 @@ lval* builtin_head(lenv* e, lval* a) {
   if (v->type == LVAL_QEXPR) {
     while (v->count > 1) { lval_del(lval_pop(v, 1)); }
   } else {
-    char tmp = v->str[0];
-    printf("%s\n", tmp);
-    // v->str = realloc(v->str, sizeof(char));
-    v->str[0] = tmp;
+    char* new_str = malloc(2 * sizeof(char));
+    new_str[0] = v->str[0];
+    new_str[1] = '\0';
+    free(v->str);
+    v->str = new_str;
   }
   return v;
 }
@@ -517,10 +518,10 @@ lval* builtin_tail(lenv* e, lval* a) {
   if (v->type == LVAL_QEXPR) {
     lval_del(lval_pop(v, 0));
   } else {
-    for (int i = 0; i < strlen(v->str) - 1; i++) {
-      v->str[i] = v->str[i+1];
-    }
-    v->str = realloc(v->str, sizeof(char) * (strlen(v->str) - 1));
+    char* new_str = malloc(sizeof(char) * strlen(v->str));
+    memcpy(new_str, v->str + sizeof(char), strlen(v->str));
+    free(v->str);
+    v->str = new_str;
   }
   return v;
 }

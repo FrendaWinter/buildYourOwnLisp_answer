@@ -121,7 +121,11 @@ lval* builtin_head(lenv* e, lval* a) {
   if (v->type == LVAL_QEXPR) {
     while (v->count > 1) { lval_del(lval_pop(v, 1)); }
   } else {
-    v->str = realloc(v->str, sizeof(char));
+    char* new_str = malloc(2 * sizeof(char));
+    new_str[0] = v->str[0];
+    new_str[1] = '\0';
+    free(v->str);
+    v->str = new_str;
   }
   return v;
 }
@@ -131,9 +135,50 @@ lval* builtin_head(lenv* e, lval* a) {
 
 ### Question 3: Adapt the builtin function tail to work on strings.
 
+```c 
+lval* builtin_tail(lenv* e, lval* a) {
+  LASSERT_NUM("tail", a, 1);
+
+  // Validate data type of input for join, must be Q-expr or String
+  switch (a->cell[0]->type) {
+    case LVAL_QEXPR:
+      LASSERT_TYPE("tail", a, 0, LVAL_QEXPR);
+      LASSERT_NOT_EMPTY("tail", a, 0);
+      break;
+    case LVAL_STR:
+      LASSERT_TYPE("tail", a, 0, LVAL_STR);
+      LASSERT_NOT_EMPTY_STR("tail", a, 0);
+      break;
+    default:
+      lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "tail", 0, ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+      lval_del(a);
+      return err;  
+  }
+
+  lval* v = lval_take(a, 0);  
+  if (v->type == LVAL_QEXPR) {
+    lval_del(lval_pop(v, 0));
+  } else {
+    char* new_str = malloc(sizeof(char) * strlen(v->str));
+    memcpy(new_str, v->str + sizeof(char), strlen(v->str));
+    free(v->str);
+    v->str = new_str;
+  }
+  return v;
+}
+
+```
+
 ---
 
 ### Question 4: Create a builtin function read that reads in and converts a string to a Q-expression.
+
+**Design:**
+
+- Function call is `read`
+- We can call read with string or variable, but it should be string. `read "adfhj adsf"` or `read x`
+- String will be split by blank space `read "Hello manh"` will output `{"Hello" "manh"}`
+    - Multiple blank space next each other will be treat as one blank space
 
 ---
 
