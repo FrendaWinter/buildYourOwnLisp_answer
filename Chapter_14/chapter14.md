@@ -182,12 +182,76 @@ lval* builtin_tail(lenv* e, lval* a) {
 
 ---
 
-### Question 5: Create a builtin function show that can print the contents of strings as it is (unescaped).
+### Question 5: Create a builtin function show that can print the contents of strings as they are (unescaped).
 
 ---
 
-### Question 6: Create a special value ok to return instead of empty expressions ().
+### Question 6: Create a special value `ok` to return instead of empty expressions `()`.
+
+In the `lval_eval` function, we can add a check to return a special value `ok` instead of an empty expression `()` when evaluating an empty Q-expression. Here's the updated code:
+
+```c
+lval* lval_eval(lenv* e, lval* v) {
+  if (v->type == LVAL_SEXPR) { return lval_eval_sexpr(e, v); }
+  if (v->type == LVAL_QEXPR) { return lval_eval_qexpr(e, v); }
+  return v;
+}
+
+lval* lval_eval_qexpr(lenv* e, lval* v) {
+  if (v->count == 0) { return lval_ok(); } // Return `ok` for empty Q-expressions
+  // ... rest of the code
+}
+
+lval* lval_ok(void) {
+  lval* v = malloc(sizeof(lval));
+  v->type = LVAL_OK;
+  return v;
+}
+```
 
 ---
 
 ### Question 7: Add functions to wrap all of C's file handling functions such as fopen and fgets.
+
+To wrap C's file handling functions such as `fopen` and `fgets`, we can create new builtin functions in our Lisp environment. Here's an example implementation:
+
+```c
+lval* builtin_fopen(lenv* e, lval* a) {
+  LASSERT_NUM("fopen", a, 2);
+  LASSERT_TYPE("fopen", a, 0, LVAL_STR);
+  LASSERT_TYPE("fopen", a, 1, LVAL_STR);
+
+  char* filename = a->cell[0]->str;
+  char* mode = a->cell[1]->str;
+  FILE* file = fopen(filename, mode);
+
+  if (file == NULL) {
+    return lval_err("Unable to open file '%s' with mode '%s'", filename, mode);
+  }
+
+  return lval_file(file);
+}
+
+lval* builtin_fgets(lenv* e, lval* a) {
+  LASSERT_NUM("fgets", a, 1);
+  LASSERT_TYPE("fgets", a, 0, LVAL_FILE);
+
+  FILE* file = a->cell[0]->file;
+  char* buffer = malloc(sizeof(char) * 1024);
+  if (fgets(buffer, 1024, file) == NULL) {
+    free(buffer);
+    return lval_err("Error reading from file");
+  }
+
+  lval* result = lval_str(buffer);
+  free(buffer);
+  return result;
+}
+
+lval* lval_file(FILE* file) {
+  lval* v = malloc(sizeof(lval));
+  v->type = LVAL_FILE;
+  v->file = file;
+  return v;
+}
+```
