@@ -188,24 +188,76 @@ lval* builtin_tail(lenv* e, lval* a) {
 
 ### Question 6: Create a special value `ok` to return instead of empty expressions `()`.
 
-In the `lval_eval` function, we can add a check to return a special value `ok` instead of an empty expression `()` when evaluating an empty Q-expression. Here's the updated code:
+We create new lval type for this
 
 ```c
-lval* lval_eval(lenv* e, lval* v) {
-  if (v->type == LVAL_SEXPR) { return lval_eval_sexpr(e, v); }
-  if (v->type == LVAL_QEXPR) { return lval_eval_qexpr(e, v); }
-  return v;
-}
+enum
+{
+  LVAL_ERR,
+  // .... //
+  LVAL_QEXPR,
+  LVAL_OK // New type
+};
 
+lval *lval_ok(void)
+{
+  lval *v = malloc(sizeof(lval));
+  v->type = LVAL_OK;
+  v->count = 0;
+  v->cell = NULL;
+  return v;
+};
+
+```
+
+To be able to `eval` new lval type, In `lval_eval_qexpr` function, instead of return empty expressions, we return `lval_ok`
+
+```c
 lval* lval_eval_qexpr(lenv* e, lval* v) {
   if (v->count == 0) { return lval_ok(); } // Return `ok` for empty Q-expressions
   // ... rest of the code
 }
+```
 
-lval* lval_ok(void) {
-  lval* v = malloc(sizeof(lval));
-  v->type = LVAL_OK;
-  return v;
+To it can print out properly in the shell, we need to add new case for `lval_ok` in `lval_print` function
+
+```c
+void lval_print(lval *v)
+{
+  switch (v->type)
+  {
+    // ... //
+    case LVAL_OK:
+      printf("ok");
+      break;
+  }
+}
+```
+
+For handle error when we pass the empty expressions to operator `+` `-` or `*` `/` like this one 
+
+```
+lispy> eval ()
+Error: Function 'eval' passed incorrect type for argument 0. Got Unknown, Expected Q-Expression.
+lispy> eval {()}
+ok
+lispy> eval {+ 3 ()}
+Error: Function '+' passed incorrect type for argument 1. Got Unknown, Expected Number.
+```
+
+Instead of return `Unknown type`, it should return something more meaningful
+
+```c
+char *ltype_name(int t)
+{
+  switch (t)
+  {
+    // ... //
+    case LVAL_OK:
+      return "Empty expression";
+    default:
+      return "Unknown";
+  }
 }
 ```
 
