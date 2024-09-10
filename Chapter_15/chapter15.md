@@ -3,7 +3,24 @@
 Online read link: https://buildyourownlisp.com/chapter15_standard_library
 
 ### Question 1: Rewrite the len function using foldl.
+
+```c
+lispy> fun {count a _} {+ a 1}
+()
+lispy> fun {len l} {foldl count 0 l}
+()
+lispy> len {134 541 45 56 24}
+5
+lispy>
+```
+
+---
+
 ### Question 2: Rewrite the elem function using foldl.
+
+```c
+```
+
 ### Question 3: Incorporate your standard library directly into the language. Make it load at start-up.
 
 To load the lib at start up, we load the file right after declare the global environment
