@@ -8,12 +8,32 @@
 <h2>Answer for question in the book Build your own Lisp of Daniel Holden.</h2>
 <br></br>
 
-</div>
-<h3>🏷️ Info</h3>
-<h4>This is the my repo for store the answers when I learn the book "Build your own Lisp"</h4>
-<h4>Hope this will help all that come here find the solutions for the difficulties in reading the book</h4>
-<h4>📗 The book: https://buildyourownlisp.com/</h4>
-<h4>☎️ Author: Daniel Holden</h4>
+## 🏷️ Info
+
+This repository contains my solutions and answers to the exercises and questions in the book "Build Your Own Lisp" by Daniel Holden. The book is an excellent resource for learning how to create a Lisp interpreter from scratch using the C programming language.
+
+### Purpose
+
+The purpose of this repository is to provide a reference for anyone who is reading the book and might need help with the exercises or understanding certain concepts. By sharing my solutions, I hope to assist others in overcoming any difficulties they might encounter while working through the book.
+
+### Structure
+
+The repository is organized into chapters, each corresponding to a chapter in the book. Each chapter directory contains a markdown file with the answers and explanations for that chapter's exercises. Additionally, there are source code files where necessary to demonstrate the implementation of the concepts discussed in the book.
+
+### How to Use
+
+1. **Clone the Repository**: Clone this repository to your local machine using `git clone`.
+2. **Navigate to the Chapter**: Browse through the chapters to find the one you are currently working on.
+3. **Read the Answers**: Open the markdown file for the chapter to read the answers and explanations.
+4. **Run the Code**: If there are source code files, you can compile and run them to see the concepts in action.
+
+### 📗 The Book
+
+You can find more information about the book and read it online at [Build Your Own Lisp](https://buildyourownlisp.com/).
+
+### ☎️ Author
+
+The book "Build Your Own Lisp" is authored by Daniel Holden.
 
 ---
 
@@ -33,3 +53,4 @@
 * [[chapter14.md]](/Chapter_14/chapter14.md) ~ Answer for C14 Strings
 * [[chapter15.md]](/Chapter_15/chapter15.md) ~ Answer for C15 Standard Library
 * [[chapter16.md]](/Chapter_16/chapter16.md) ~ Answer for C16 Bonus Projects
+* [[HRP.md]](/Hand_Rolled_Parser/HRP.md) ~ Answer for Appendix A Hand Rolled Parser
