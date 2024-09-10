@@ -18,7 +18,7 @@ Online read link: https://buildyourownlisp.com/chapter16_bonus_projects
 
 ### Garbage Collection
 
-### Tail Call Optimisation
+### Tail Call Optimization
 
 ### Lexical Scoping
 
