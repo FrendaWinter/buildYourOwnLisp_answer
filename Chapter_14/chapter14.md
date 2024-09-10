@@ -53,7 +53,7 @@ In the code, `builtin_join` call `lval_join` for each `lval`
 Example:
 - If the input is `join {1 2 3 4} {123 13 43} {213 12 43}`
 - So lval 1 as x is `{1 2 3 4}`, lval 2 as y `{123 13 43}`, lval 3 as z `{213 12 43}`
-- It join x with y, delele y, then join x with z, delete z
+- It join x with y, delete y, then join x with z, delete z
 
 That the idea, now we apply for string
 - First, we check if the `lval` we got is String, then we call `lval_add` for x and y
@@ -96,6 +96,68 @@ lval* lval_add(lval* v, lval* x) {
 ---
 
 ### Question 2: Adapt the builtin function head to work on strings.
+
+The `builtin_head` function has been adapted to work with both Q-expressions and strings. Below is the detailed explanation and the code implementation.
+
+**Implementation Details**
+
+1. **Initial Assertions**: Ensure that the function receives exactly one argument.
+
+```c
+LASSERT_NUM("head", a, 1);
+```
+
+2. **Switch Case for Input Type**: Validate the type of the input argument. The function can handle either Q-expressions `LVAL_QEXPR` or strings `LVAL_STR`.
+
+```c
+switch (a->cell[0]->type) {
+  case LVAL_QEXPR:
+    LASSERT_TYPE("head", a, 0, LVAL_QEXPR);
+    LASSERT_NOT_EMPTY("head", a, 0);
+    break;
+  case LVAL_STR:
+    LASSERT_TYPE("head", a, 0, LVAL_STR);
+    LASSERT_NOT_EMPTY_STR("head", a, 0);
+    break;
+  default:
+    lval* err = lval_err("Function '%s' passed incorrect type for argument %i. Got %s, Expected %s or %s.", "head", 0, ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR), ltype_name(LVAL_STR));
+    lval_del(a);
+    return err;
+}
+```
+
+3. **Handling Q-Expressions**: If the input is a Q-expression, the function takes the first element and deletes the rest.
+
+```c
+lval* v = lval_take(a, 0);
+if (v->type == LVAL_QEXPR) {
+  while (v->count > 1) { lval_del(lval_pop(v, 1)); }
+  return v;
+}
+```
+
+4. **Handling Strings**: If the input is a string, the function extracts the first character and returns it as a new string.
+
+```c
+if (v->type == LVAL_STR) {
+  char* str = v->str;
+  char* head_str = malloc(2); // Allocate space for one character and the null terminator
+  head_str[0] = str[0];
+  head_str[1] = '\0';
+  lval* result = lval_str(head_str);
+  free(head_str);
+  lval_del(v);
+  return result;
+}
+```
+
+5. **Error Handling**: If the input type is neither Q-expression nor string, an error is returned.
+
+```c
+return lval_err("Unknown error in builtin_head.");
+```
+
+**Full Adapted Function**
 
 ```c
 lval* builtin_head(lenv* e, lval* a) {
@@ -176,7 +238,7 @@ lval* builtin_tail(lenv* e, lval* a) {
 **Design:**
 
 - Function call is `read`
-- We can call read with string or variable, but it should be string. `read "adfhj adsf"` or `read x`
+- We can call read with string or variable, but it should be string. `read "manh duong"` or `read x`
 - String will be split by blank space `read "Hello manh"` will output `{"Hello" "manh"}`
     - Multiple blank space next each other will be treat as one blank space
 
